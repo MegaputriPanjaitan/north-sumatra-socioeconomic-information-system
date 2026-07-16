@@ -1,0 +1,6 @@
+pandas
+requests
+openpyxl
+camelot-py
+opencv-python
+pypdf

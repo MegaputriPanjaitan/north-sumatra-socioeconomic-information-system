@@ -4,7 +4,7 @@ DATASETS = {
         "raw_folder": "data/raw/pembangunan",
         "output": "data/processed/ipm_master.csv",
         "file_prefix": "ipm",
-        "skip_rows": 3,
+        "skip_rows": 1,
         "columns": [
             "Kabupaten_Kota",
             "IPM"

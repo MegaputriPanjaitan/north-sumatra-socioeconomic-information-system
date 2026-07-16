@@ -17,10 +17,15 @@ def process_ipm(config):
 
         df = pd.read_excel(file, header=None)
 
-        df = df.iloc[3:].reset_index(drop=True)
+        df = df.iloc[1:].reset_index(drop=True)
         df.columns = ["Kabupaten_Kota", "IPM"]
 
         df["IPM"] = pd.to_numeric(df["IPM"], errors="coerce")
+        # Hapus data provinsi
+        df = df[df["Kabupaten_Kota"] != "Sumatera Utara"]
+
+        # Hapus baris kosong
+        df = df.dropna(subset=["Kabupaten_Kota", "IPM"])
         df["Tahun"] = year
 
         all_data.append(df)
@@ -46,7 +51,7 @@ def process_penduduk(config):
 
         df = pd.read_excel(file, header=None)
 
-        df = df.iloc[4:].reset_index(drop=True)
+        df = df.iloc[5:].reset_index(drop=True)
 
         df.columns = [
             "Kabupaten_Kota",
@@ -61,6 +66,14 @@ def process_penduduk(config):
             "Laki_Laki"
         ]:
             df[col] = pd.to_numeric(df[col], errors="coerce")
+            # Hapus data provinsi
+            df = df[~df["Kabupaten_Kota"].isin([
+                "Sumatera Utara",
+                "Provinsi Sumatera Utara"
+            ])]
+
+            # Hapus baris kosong
+            df = df.dropna(subset=["Kabupaten_Kota"])
 
         df["Tahun"] = year
 
@@ -95,15 +108,18 @@ def process_kemiskinan(config):
         year = int(file.stem.split("_")[1])
 
         df = pd.read_excel(file)
-
-        df = df.iloc[:, [0,1,3,5]]
+        
+        if year == 2020:
+            df = df.iloc[:, [0, 1, 2, 3]]
+        else:
+            df = df.iloc[:, [0, 1, 3, 5]]
 
         df.columns = [
             "Kabupaten_Kota",
             "Garis_Kemiskinan",
             "Jumlah_Penduduk_Miskin",
             "Persentase_Penduduk_Miskin"
-        ]
+]
 
         for col in [
             "Garis_Kemiskinan",
@@ -111,6 +127,20 @@ def process_kemiskinan(config):
             "Persentase_Penduduk_Miskin"
         ]:
             df[col] = pd.to_numeric(df[col], errors="coerce")
+            
+            # Hapus data provinsi
+            df = df[~df["Kabupaten_Kota"].isin([
+                "Sumatera Utara",
+                "Provinsi Sumatera Utara"
+            ])]
+
+            # Hapus baris kosong
+            df = df.dropna(subset=[
+                "Kabupaten_Kota",
+                "Persentase_Penduduk_Miskin"
+            ])
+                        
+            
 
         df["Tahun"] = year
 
@@ -156,6 +186,14 @@ def process_tpt(config):
 
         df["TPT"] = pd.to_numeric(df["TPT"], errors="coerce")
         df["TPAK"] = pd.to_numeric(df["TPAK"], errors="coerce")
+        # Hapus data provinsi
+        df = df[~df["Kabupaten_Kota"].isin([
+            "Sumatera Utara",
+            "Provinsi Sumatera Utara"
+        ])]
+
+        # Hapus baris kosong
+        df = df.dropna(subset=["Kabupaten_Kota"])
 
         df["Tahun"] = year
 
